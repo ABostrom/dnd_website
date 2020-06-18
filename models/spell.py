@@ -8,7 +8,7 @@ class SpellComponent(enum.IntEnum):
 
 class SpellSchools(enum.IntEnum):
     abjuration = auto()
-    conjuration =auto()
+    conjuration = auto()
     divination = auto()
     enchantment = auto()
     evocation = auto()
@@ -45,34 +45,28 @@ class SpellDataBase:
         super().__init__()
 
         self.spells = {
-            1 : Spell(1, "Eldritch Blast", SpellSchools.evocation, SpellLevels.Cantrip, "1 action", 120, "Instantaneous", [SpellComponent.v, SpellComponent.s] 
-            #,"A beam of crackling energy streaks toward a creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 force damage. \
-            #The spell creates more than one beam when you reach higher levels: two beams at 5th level, three beams at 11th level, and four beams at 17th level. \
-            #You can direct the beams at the same target or at different ones. Make a separate attack roll for each beam."
+            "eldritch-blast" : Spell("Eldritch Blast", SpellSchools.evocation, SpellLevels.Cantrip, "1 action", 120, "Instantaneous", [SpellComponent.v, SpellComponent.s] 
+            ,"A beam of crackling energy streaks toward a creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 force damage. \
+            The spell creates more than one beam when you reach higher levels: two beams at 5th level, three beams at 11th level, and four beams at 17th level. \
+            You can direct the beams at the same target or at different ones. Make a separate attack roll for each beam."
             ), 
             
-            2 :  Spell(2, "Mending", SpellSchools.transmutation, SpellLevels.Cantrip, "1 action", 0, "Instantaneous", [SpellComponent.v, SpellComponent.s, SpellComponent.m]
+            "mending" :  Spell("Mending", SpellSchools.transmutation, SpellLevels.Cantrip, "1 action", 0, "Instantaneous", [SpellComponent.v, SpellComponent.s, SpellComponent.m]
             ,"This spell repairs a single break or tear in an object you touch, such as a broken chain link, two halves of a broken key, a torn cloak, or a leaking wineskin. As long as the break or tear is no larger than 1 foot in any dimension, you mend it, leaving no trace of the former damage.\
             This spell can physically repair a magic item or construct, but the spell can't restore magic to such an object."
             ),
-
-            3 : Spell(3, "Eldritch Smash", SpellSchools.evocation, SpellLevels.level1, "1 action", 120, "Instantaneous", [SpellComponent.v, SpellComponent.s]
-            #,"A beam of crackling energy streaks toward a creature within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 force damage. \
-            #The spell creates more than one beam when you reach higher levels: two beams at 5th level, three beams at 11th level, and four beams at 17th level. \
-            #You can direct the beams at the same target or at different ones. Make a separate attack roll for each beam."
-            ), 
         }
 
         #create dictionary of empty spell school objects.
-        self.school_spells = {school: SpellList(school.name) for school in SpellSchools}
+        self.school_spells = {school: SpellList(school) for school in SpellSchools}
        
         #append the spell id, to the appropriate data table to get by school.
         for spell in self.spells.values():
             self.school_spells[spell.spell_school].add_spell_by_level(spell.spell_id, spell.spell_level)
 
         #create the class spell lists by level
-        bard_spells = SpellList(CharacterClasses.bard, cantrips=[2])
-        warlock_spells = SpellList(CharacterClasses.warlock, cantrips=[1])
+        bard_spells = SpellList(CharacterClasses.bard, cantrips=["eldritch-blast"])
+        warlock_spells = SpellList(CharacterClasses.warlock, cantrips=["mending"])
         self.class_spells = {
             CharacterClasses.bard : bard_spells, 
             CharacterClasses.warlock : warlock_spells
@@ -87,7 +81,7 @@ class SpellDataBase:
         return self.spells.values()
 
     def get_spell_by_id(self, spell_id):
-        return self.spells[spell_id]
+        return {spell_id : vars(self.spells[spell_id])}
 
     def get_spell_list_by_class_and_level(self, character_class=None, spell_level=None):
         if character_class is None:
@@ -147,27 +141,17 @@ class SpellList:
 
 class Spell:
 
-    def __init__(self, spell_id, name, spell_school, spell_level, casting_time, spell_range, duration, components, description=""):
+    def __init__(self, name, spell_school, spell_level, casting_time, spell_range, duration, components, description):
         super().__init__()
-        self.spell_id = spell_id
+        self.spell_id = name.replace(" ","-").lower()
         self.name = name
         self.spell_school = spell_school
         self.spell_level = spell_level
         self.casting_time = casting_time
         self.spell_range = spell_range
         self.duration = duration
-        self.components = components
+        self.components = [comp.name.upper() for comp in components]
         self.description = description
         
-
-    
-    def serialize(self):
-            return {
-                'name': self.name, 
-                'spell_school': self.spell_school,
-                'casting_time': self.casting_time,
-            }
-
-
 
 db = SpellDataBase()
