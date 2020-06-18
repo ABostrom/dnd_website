@@ -1,18 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head lang="en">
-    <meta charset="UTF-8">
-    <title>Flask React</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- styles -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-  </head>
-  <body>
-    <div class="root">
-      <h1>Dungeons and Dragons Resource</h1>
-      <br>
-      <div id="main"></div>
-    </div>
+{# /templates/index.html_ #}
+
+{% extends "layout.html" %}
+{% block title %}School Spells{% endblock %}
+{% block body %}
+    {{ super() }}
+
+
     <!-- scripts -->
     <script src="https://unpkg.com/react@16.7.0/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js"></script>
@@ -23,5 +16,4 @@
         console.log(JSON.stringify(json_data, null, 2))
         //ReactDOM.render(realPython,document.getElementById('main'));
     </script>
-  </body>
-</html>
+{% endblock %}
