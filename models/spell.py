@@ -81,11 +81,7 @@ class SpellDataBase:
         self.spell_levels = SpellList("all")
         for spell in self.spells.values():
             self.spell_levels.add_spell_by_level(spell.spell_id, spell.spell_level)
-        
 
-        #print(self.get_spell_list_by_level())
-        print(self.get_spell_list_by_school_and_level())
-        #print(self.get_spell_list_by_class_and_level())
 
     def get_spells(self):
         return self.spells.values()
@@ -144,9 +140,9 @@ class SpellList:
     def get_spells_by_level(self, spell_level=None):
         if spell_level is None:
             return self.spells_by_level
-        else :
-            if isinstance(spell_level, int):
-                spell_level = SpellLevels[spell_level]            
+        else :  
+            if isinstance(spell_level, int): 
+                spell_level = SpellLevels(spell_level)  
             return {spell_level : self.spells_by_level[spell_level]} # else just return the particular level of spell ids
 
 class Spell:
